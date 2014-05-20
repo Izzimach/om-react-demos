@@ -10,6 +10,9 @@
 
 (def counter-app-state (atom {:counters (into [] (map (fn [n] {:id n :count 0}) (range 0 10)))}))
 
+(defn debugcomponent [cursor owner]
+  (dom/p nil (pr-str cursor)))
+
 (defn counter [cursor owner]
   (reify
     om/IRenderState
@@ -60,3 +63,8 @@
            {:target (.getElementById js/document elementid)
               :tx-listen (fn [tx-data root-cursor] (println tx-data))}))
 
+(defn debugcounterstate [elementid]
+  (om/root debugcomponent counter-app-state
+           {:target (.getElementById js/document elementid)}))
+
+#_(debugcounterstate "my-app2")

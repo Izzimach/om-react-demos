@@ -29,4 +29,3 @@
   (om/root tilegroup tilesapp-state
            {:target (.getElementById js/document elementid)}))
 
-

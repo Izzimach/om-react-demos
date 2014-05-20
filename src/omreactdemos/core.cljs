@@ -13,24 +13,23 @@
   (:import [goog.events EventType])
   )
 
-(enable-console-print!)
+#_(enable-console-print!)
 
 (println "Hello world!")
 
-#_(starthelloworld
- {:text "Hello world one!" :debugtext "blargh!"}
- "my-app2")
+(starthelloworld
+   {:text "Hello world one!" :debugtext "blargh!"}
+   "my-app")
 
 #_(omreactdemos.helloworld.debughelloworld
  {:text "Hello world one!" :debugtext "blargh!"}
  "my-app2")
 
 
-(startmouseapp "my-app")
-
-(starttilesapp "my-app")
-(startcounterapp "my-app")
-
+#_(startmouseapp "my-app")
+#_(starttilesapp "my-app")
+#_(startcounterapp "my-app")
+#_(debugcounterstate "my-app2")
 
 
 

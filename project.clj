@@ -1,4 +1,4 @@
-(defproject omreactdemos "0.1.0-SNAPSHOT"
+ (defproject omreactdemos "0.1.0-SNAPSHOT"
   :description "It's a cookbook!"
   :url "http://example.com/FIXME"
 

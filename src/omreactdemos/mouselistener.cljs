@@ -8,11 +8,13 @@
   (:import [goog.events EventType]))
 
 
+(def mouselistener-state (atom {:mouse nil :keypress nil}))
+
+
 (defn listen [element type]
   (let [out (chan)]
     (events/listen element type #(put! out %))
     out))
-
 
 (defn mouse-view [app owner]
   (reify
@@ -28,26 +30,26 @@
                     (when-let [pos (:mouse app)]
                       (pr-str (:mouse app)))))))
 
-(defn mouse-key-view [app owner]
+(defn key-view [app owner]
   (reify
     om/IWillMount
     (will-mount [_]
-                (let [fixcoords (fn [e] [(./-clientX e) (.-clientY e)])
-                      mouse-chan (async/map fixcoords [(listen js/window EventType/MOUSEMOVE)])
-                      keypress-chan (listen js/window EventType/KEYPRESS)]
+                (let [keypress-chan (listen js/window EventType/KEYPRESS)]
                   (go (while true
-                        (apply om/update! app (alt!
-                                         mouse-chan ([val ch] [:mouse val])
-                                         keypress-chan ([val ch] [:keypress val])))))))
+                        (om/update! app :keypress (<! keypress-chan))))))
     om/IRender
      (render [_]
              (dom/p nil
-                    (cstring/join ["Mouse: "
-                                   (if-let [pos (:mouse app)] (pr-str pos) "")
-                                   " Keypress: "
-                                   (if-let [keypress (:keypress app)] (pr-str (.-keyCode keypress)) "")])))))
+                    (when-let [keyevent (:keypress app)]
+                      (pr-str (.-keyCode keyevent)))))))
+
+(defn mouse-key-view [app owner]
+  (dom/div nil (om/build mouse-view app) (om/build key-view app)))
 
 (defn startmouseapp [elementid]
-  (om/root mouse-view {:mouse nil :keypress nil}
-           {:target (.getElementById js/document "my-app")}))
+  (om/root mouse-view mouselistener-state
+           {:target (.getElementById js/document elementid)}))
 
+(defn startkeypressapp [elementid]
+  (om/root mouse-key-view mouselistener-state
+           {:target (.getElementById js/document elementid)}))
