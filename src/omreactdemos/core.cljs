@@ -7,15 +7,14 @@
             [omreactdemos.helloworld :refer [starthelloworld debughelloworld]]
             [omreactdemos.mouselistener :refer [startmouseapp]]
             [omreactdemos.tilesapp :refer [starttilesapp]]
-            [omreactdemos.counterapp :refer [startcounterapp]]
+            [omreactdemos.counterapp :refer [startcounterapp debugcounterstate]]
 
             )
   (:import [goog.events EventType])
   )
 
-#_(enable-console-print!)
+(enable-console-print!)
 
-(println "Hello world!")
 
 (starthelloworld
    {:text "Hello world one!" :debugtext "blargh!"}
@@ -28,8 +27,8 @@
 
 #_(startmouseapp "my-app")
 #_(starttilesapp "my-app")
-#_(startcounterapp "my-app")
-#_(debugcounterstate "my-app2")
+(startcounterapp "my-app")
+(debugcounterstate "my-app2")
 
 
 

@@ -13,24 +13,26 @@
 (defn debugcomponent [cursor owner]
   (dom/p nil (pr-str cursor)))
 
+(defn countbutton
+  [cursor clickchannel modfunc displaytext]
+  "Display a DOM button. When clicked, applies 'modfunc' to the cursor
+   and sends the cursor to the clickchannel"
+  (dom/button
+   #js {:onClick
+    (fn [e]
+      (om/transact! cursor :count modfunc)
+      (put! clickchannel (.-path cursor)))}
+   displaytext))
+
+
 (defn counter [cursor owner]
   (reify
     om/IRenderState
     (render-state [_ {:keys [last-clicked]}]
                   (dom/div nil
                            (dom/label nil (:count cursor))
-                           (dom/button
-                            #js {:onClick
-                                 (fn [e]
-                                   (om/transact! cursor :count inc)
-                                   (put! last-clicked (.-path cursor)))}
-                            "+")
-                           (dom/button
-                            #js {:onClick
-                                 (fn [e]
-                                   (om/transact! cursor :count dec)
-                                   (put! last-clicked (.-path cursor)))}
-                            "-")))))
+                           (countbutton cursor last-clicked inc "+")
+                           (countbutton cursor last-clicked dec "-")))))
 
 (defn counter-view [appdata owner]
   (reify
@@ -67,4 +69,4 @@
   (om/root debugcomponent counter-app-state
            {:target (.getElementById js/document elementid)}))
 
-#_(debugcounterstate "my-app2")
+(debugcounterstate "my-app2")

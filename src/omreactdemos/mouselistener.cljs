@@ -12,16 +12,20 @@
 
 
 (defn listen [element type]
+  "Returns a channel that emits mouse events"
   (let [out (chan)]
     (events/listen element type #(put! out %))
     out))
+
+(defn localmousecoords [event]
+  "Get local coords of the mouse event"
+  [(./-clientX event) (.-clientY event)])
 
 (defn mouse-view [app owner]
   (reify
     om/IWillMount
     (will-mount [_]
-                (let [fixcoords (fn [e] [(./-clientX e) (.-clientY e)])
-                      mouse-chan (async/map fixcoords [(listen js/window EventType/MOUSEMOVE)])]
+                (let [mouse-chan (async/map localmousecoords [(listen js/window EventType/MOUSEMOVE)])]
                   (go (while true
                         (om/update! app :mouse (<! mouse-chan))))))
     om/IRender
@@ -34,6 +38,7 @@
   (reify
     om/IWillMount
     (will-mount [_]
+                ;; just grab all keypress events
                 (let [keypress-chan (listen js/window EventType/KEYPRESS)]
                   (go (while true
                         (om/update! app :keypress (<! keypress-chan))))))

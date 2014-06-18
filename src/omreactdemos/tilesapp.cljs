@@ -6,6 +6,10 @@
             [om.dom :as dom :include-macros true])
   (:import [goog.events EventType]))
 
+;;
+;; example of building an array of components using build-all
+;;
+
 (defn maketile [id] {:id id :text "arrrrgh!" })
 
 (def tilesapp-state (atom {:tiles (map maketile [1 2 3 4])}))
